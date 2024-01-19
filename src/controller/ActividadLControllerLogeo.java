@@ -12,6 +12,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,18 +38,9 @@ public class ActividadLControllerLogeo implements Initializable{
      */
     @FXML
     void logear(ActionEvent event) {
-    	String sUsuario = tfUsuario.getText();
-    	String sContrasena = tfContrasena.getText();
-    	
-    	String txtUsuario = Propiedades.getValor("usuario");
-    	String txtContrasena = Propiedades.getValor("contrasena");
-    	if(sUsuario.equals(txtUsuario)&&sContrasena.equals(txtContrasena)) {
-    		crearVentanaAux();    		
-    	}else {
-    		ventanaAlerta("E", "Datos incorrectos.");
-    	}
+    	acceder();
     }
-
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
@@ -98,5 +91,17 @@ public class ActividadLControllerLogeo implements Initializable{
 			System.out.println("La ventana no se abrió correctamente.");
 			e.printStackTrace();
 		}
+	}
+	private void acceder() {
+		String sUsuario = tfUsuario.getText();
+    	String sContrasena = tfContrasena.getText();
+    	
+    	String txtUsuario = Propiedades.getValor("usuario");
+    	String txtContrasena = Propiedades.getValor("contrasena");
+    	if(sUsuario.equals(txtUsuario)&&sContrasena.equals(txtContrasena)) {
+    		crearVentanaAux();    		
+    	}else {
+    		ventanaAlerta("E", "Datos incorrectos.");
+    	}
 	}
 }
