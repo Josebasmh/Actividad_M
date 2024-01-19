@@ -166,7 +166,7 @@ public class ActividadLControllerAeropuertosAviones implements Initializable{
     			registro=new RegistroTabla(registrotabla.getId(),registrotabla.getNombre(), registrotabla.getPais(), registrotabla.getCiudad(), registrotabla.getCalle(), registrotabla.getNumero(),
     					registrotabla.getAnio(), registrotabla.getCapacidad(), registrotabla.getFinanciacion(),registrotabla.getNum_trabajadores());
     		}
-    		crearVentanaAux("aniadirAeropuerto","MODIFICAR AEROPUERTO",1020,600);
+    		crearVentanaAux("aniadirAeropuerto","MODIFICAR AEROPUERTO",400,600);
     		tvTabla.setItems(aDao.cargarAeropuertos(bPrivado));
     	}catch(NullPointerException e){
     		ActividadLControllerLogeo.ventanaAlerta("E", "Seleccione un registro de la tabla. Si no hay, añada uno.");
