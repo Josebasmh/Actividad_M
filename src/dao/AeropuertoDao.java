@@ -1,11 +1,20 @@
 package dao;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import conexion.ConexionBD;
 import javafx.collections.FXCollections;
+import javafx.scene.image.Image;
 import javafx.collections.ObservableList;
 import model.Aeropuerto;
 import model.Avion;
@@ -51,14 +60,23 @@ public class AeropuertoDao {
 				int nnumero=rs.getInt("numero");
 				int nanio=rs.getInt("anio_inauguracion");
 				int ncapacidad=rs.getInt("capacidad");
+				
+				//crear imagen
+				Image imagen = null;
+				try {
+					Blob blob = rs.getBlob("imagen");
+					byte b[]=null;
+					b = blob.getBytes(1,(int) blob.length());
+					imagen = new Image(new ByteArrayInputStream(b));	
+				}catch(NullPointerException e) {}
 				RegistroTabla rt; 
 				if(bPrivado) {
 					Integer nsocios=rs.getInt("numero_socios");
-					rt = new RegistroTabla(nid, snombre, spais, sciudad, scalle, nnumero, nanio, ncapacidad, nsocios);
+					rt = new RegistroTabla(nid, snombre, spais, sciudad, scalle, nnumero, nanio, ncapacidad, nsocios,imagen);
 				}else {
 					Float nfinanciacion=rs.getFloat("financiacion");
 					Integer ntrabajadores=rs.getInt("num_trabajadores");
-					rt = new RegistroTabla(nid, snombre, spais, sciudad, scalle, nnumero, nanio, ncapacidad, nfinanciacion,ntrabajadores);
+					rt = new RegistroTabla(nid, snombre, spais, sciudad, scalle, nnumero, nanio, ncapacidad, nfinanciacion,ntrabajadores,imagen);
 				}
 				listaRegistros.add(rt);
 			}
@@ -81,7 +99,8 @@ public class AeropuertoDao {
 				Integer anio = rs.getInt("anio_inauguracion");
 				Integer capacidad = rs.getInt("capacidad");
 				Integer idDireccion = rs.getInt("id_direccion");
-				Aeropuerto a = new Aeropuerto(id, nombre, anio, capacidad, idDireccion);
+				Image imagen = (Image) rs.getBlob("imagen");
+				Aeropuerto a = new Aeropuerto(id, nombre, anio, capacidad, idDireccion,imagen);
 				listaAeropuerto.add(a);
 			}
 		} catch (SQLException e) {}
@@ -133,12 +152,14 @@ public class AeropuertoDao {
 		}
 				
 		String consultaDirecciones="INSERT INTO direcciones values("+idDirecciones+",'"+pais+"','"+ciudad+"','"+calle+"',"+numero+");";
-		String consultaAeropuertos="INSERT INTO aeropuertos values("+id+",'"+nombre+"',"+anio+","+capacidad+","+idDirecciones+",NULL);";
+		String consultaAeropuertos="INSERT INTO aeropuertos values("+id+",'"+nombre+"',"+anio+","+capacidad+","+idDirecciones+",?);";		
 		PreparedStatement pstmt;
 		try {
-			pstmt = conexion.getConexion().prepareStatement(consultaDirecciones);
+			pstmt = conexion.getConexion().prepareStatement(consultaDirecciones);			
 			pstmt.executeUpdate();
-			pstmt.executeUpdate(consultaAeropuertos);
+			pstmt = conexion.getConexion().prepareStatement(consultaAeropuertos);
+			pstmt.setBinaryStream(1, conseguirBinario(rt.getImagen()));
+			pstmt.executeUpdate();
 			if (bPrivado) {
 				pstmt.executeUpdate(consultaPrivado);
 			}else {
@@ -180,7 +201,7 @@ public class AeropuertoDao {
 	
 	public void modificarRegistro(RegistroTabla rt,boolean privado) {		
 		int id=-1;
-		String consultaAeropuerto="UPDATE aeropuertos SET nombre = '"+rt.getNombre()+"',anio_inauguracion = "+rt.getAnio()+",capacidad = "+rt.getCapacidad()+
+		String consultaAeropuerto="UPDATE aeropuertos SET nombre = '"+rt.getNombre()+"',anio_inauguracion = "+rt.getAnio()+",capacidad = "+rt.getCapacidad()+",imagen=?"+
 				" WHERE id = "+rt.getId()+";";
 		String consultaPri = "UPDATE aeropuertos_privados SET numero_socios = "+rt.getSocios()+" WHERE id_aeropuerto = "+rt.getId();
 		String consultaPub= "UPDATE aeropuertos_publicos SET financiacion = "+rt.getFinanciacion()+",num_trabajadores = "+rt.getNum_trabajadores()+
@@ -191,25 +212,28 @@ public class AeropuertoDao {
 		
 		PreparedStatement pstmt;
 		try {
-			pstmt = conexion.getConexion().prepareStatement(consultaIdDirecciones);
+			pstmt = conexion.getConexion().prepareStatement(consultaIdDirecciones);			
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
 				id=rs.getInt("id_direccion");
 			}
 			rs.close();
 			if(privado) {
+				
 				pstmt.executeUpdate(consultaPri);
 			}else {
 				pstmt.executeUpdate(consultaPub);
 			}
-			
-			pstmt.executeUpdate(consultaAeropuerto);
+			pstmt = conexion.getConexion().prepareStatement(consultaAeropuerto);
+			pstmt.setBinaryStream(1, conseguirBinario(rt.getImagen()));
+			pstmt.executeUpdate();
 			pstmt.executeUpdate(consultaDirecciones);
 			pstmt.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}		
-	}
+	}	
+
 	public ObservableList<Avion>cargarAviones(int ida){
 		ObservableList<Avion>listaAvion= FXCollections.observableArrayList();
 		String consulta = "SELECT * FROM aviones WHERE id_aeropuerto = "+ida+";";
@@ -255,14 +279,15 @@ public class AeropuertoDao {
 				String ciudad = rs.getString("ciudad");
 				String calle = rs.getString("calle");
 				Integer numero = rs.getInt("numero");
+				Image imagen = (Image) rs.getBlob("imagen");
 				RegistroTabla rt;
 				if (bPrivado) {
 					Integer numero_socios = rs.getInt("numero_socios");
-					rt = new RegistroTabla(idAeropuertos, nombre, pais, ciudad, calle, numero, anio, capacidad, numero_socios);					
+					rt = new RegistroTabla(idAeropuertos, nombre, pais, ciudad, calle, numero, anio, capacidad, numero_socios,imagen);					
 				}else {
 					Float financiacion = rs.getFloat("financiacion");
 					Integer num_trabajadores = rs.getInt("num_trabajadores");
-					rt = new RegistroTabla(idAeropuertos, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, num_trabajadores);
+					rt = new RegistroTabla(idAeropuertos, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, num_trabajadores,imagen);
 				}
 				listaRegistros.add(rt);
 			}			
@@ -342,5 +367,16 @@ public class AeropuertoDao {
 		} catch (SQLException e) {
 			return false;			
 		}
+	}
+	private FileInputStream conseguirBinario(Image imagen) {
+		String ruta = imagen.getUrl().substring(6);
+		File f = new File(ruta);
+		FileInputStream fi=null;
+		try {
+			fi = new FileInputStream(f);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}		
+		return fi;
 	}
 }

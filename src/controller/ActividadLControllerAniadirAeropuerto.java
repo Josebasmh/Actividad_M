@@ -1,6 +1,7 @@
 package controller;
 
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,6 +17,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.RegistroTabla;
 
@@ -26,6 +30,12 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
 
     @FXML
     private Button btnGuardar;
+    
+    @FXML
+    private Button btnImagen;
+
+    @FXML
+    private ImageView imgImagen;
 
     @FXML
     private Label lbFinanciacion;
@@ -120,6 +130,21 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
     	}
     }
     
+    @FXML
+    void SeleccionarImagen(ActionEvent event) {
+    	FileChooser fileChooser = new FileChooser();   
+    	fileChooser.getExtensionFilters().addAll(
+    			new FileChooser.ExtensionFilter("All images", "*.*"),
+    			new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+    			new FileChooser.ExtensionFilter("PNG", "*.png")
+    			);
+    	Node node = (Node)event.getSource();
+    	Stage stage = (Stage) node.getScene().getWindow();
+    	File fImage = fileChooser.showOpenDialog(stage);
+    	Image img = new Image("file: " + fImage.getAbsolutePath());
+    	imgImagen.setImage(img);
+    }
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// Creación de variables para no escribir toda esa parrafada. 
@@ -161,16 +186,17 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
     	Integer numero=Integer.parseInt(tfNumero.getText());
     	Integer anio=Integer.parseInt(tfAnio.getText());
     	Integer capacidad=Integer.parseInt(tfCapacidad.getText());
+    	Image imagen = imgImagen.getImage();
     	RegistroTabla rt;
     	
     	if (rbPrivado.isSelected()) {
     		Integer socios=Integer.parseInt(tfFinanciacion.getText());
-    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, socios);
+    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, socios,imagen);
     		
     	}else {
     		Float financiacion=Float.valueOf(tfFinanciacion.getText());
     		Integer trabajadores=Integer.parseInt(tfTrabajadores.getText());
-    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, trabajadores);
+    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, trabajadores,imagen);
     	}
     	
     	aDao.aniadirRegistro(rt,rbPrivado.isSelected());    	
@@ -186,16 +212,17 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
     	Integer numero=Integer.parseInt(tfNumero.getText());
     	Integer anio=Integer.parseInt(tfAnio.getText());
     	Integer capacidad=Integer.parseInt(tfCapacidad.getText());
+    	Image imagen = imgImagen.getImage();
     	RegistroTabla rt;
     	
     	if (rbPrivado.isSelected()) {
     		Integer socios=Integer.parseInt(tfFinanciacion.getText());
-    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, socios);
+    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, socios,imagen);
     		
     	}else {
     		Float financiacion=Float.valueOf(tfFinanciacion.getText());
     		Integer trabajadores=Integer.parseInt(tfTrabajadores.getText());
-    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, trabajadores);
+    		rt=new RegistroTabla(id, nombre, pais, ciudad, calle, numero, anio, capacidad, financiacion, trabajadores,imagen);
     	}
     	aDao.modificarRegistro(rt,rbPrivado.isSelected());
     	aDao.cargarAeropuertos(bPrivado);

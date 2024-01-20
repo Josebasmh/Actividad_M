@@ -87,9 +87,9 @@ public class ActividadLControllerLogeo implements Initializable{
 		FlowPane aux;
 		try {
 			aux = (FlowPane)FXMLLoader.load(getClass().getResource("/fxml/listadoAeropuertos.fxml"));
-			Scene scene = new Scene(aux,1020,600);
+			Scene scene = new Scene(aux,1200,600);
 			arg0.setScene(scene);
-			arg0.setMinWidth(1020);
+			arg0.setMinWidth(1200);
 			arg0.setMinHeight(600);
 			arg0.getIcons().add(new Image(getClass().getResource("/img/avion.png").toString()));
 			arg0.initModality(Modality.APPLICATION_MODAL);

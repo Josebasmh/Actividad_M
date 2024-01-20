@@ -81,6 +81,9 @@ public class ActividadLControllerAeropuertosAviones implements Initializable{
     
     @FXML
     private TableColumn<RegistroTabla, Integer> tcTrabajadores;
+    
+    @FXML
+    private TableColumn<RegistroTabla, Image> tcImagen;
 
     @FXML
     private TextField tfFiltro;
@@ -125,7 +128,7 @@ public class ActividadLControllerAeropuertosAviones implements Initializable{
     @FXML
     void aniadir(ActionEvent event) {
     	registro.setId(0);
-    	crearVentanaAux("aniadirAeropuerto","AÑADIR AEROPUERTO",400,600);
+    	crearVentanaAux("aniadirAeropuerto","AÑADIR AEROPUERTO",400,880);
     	tvTabla.setItems(aDao.cargarAeropuertos(bPrivado));
     }
     
@@ -159,12 +162,12 @@ public class ActividadLControllerAeropuertosAviones implements Initializable{
     		RegistroTabla registrotabla= tvTabla.getSelectionModel().getSelectedItem();
     		if  (bPrivado) {
     			registro=new RegistroTabla(registrotabla.getId(),registrotabla.getNombre(), registrotabla.getPais(), registrotabla.getCiudad(), registrotabla.getCalle(), registrotabla.getNumero(),
-    					registrotabla.getAnio(), registrotabla.getCapacidad(), registrotabla.getSocios());
+    					registrotabla.getAnio(), registrotabla.getCapacidad(), registrotabla.getSocios(),registrotabla.getImagen());
     		}else {
     			registro=new RegistroTabla(registrotabla.getId(),registrotabla.getNombre(), registrotabla.getPais(), registrotabla.getCiudad(), registrotabla.getCalle(), registrotabla.getNumero(),
-    					registrotabla.getAnio(), registrotabla.getCapacidad(), registrotabla.getFinanciacion(),registrotabla.getNum_trabajadores());
+    					registrotabla.getAnio(), registrotabla.getCapacidad(), registrotabla.getFinanciacion(),registrotabla.getNum_trabajadores(),registrotabla.getImagen());
     		}
-    		crearVentanaAux("aniadirAeropuerto","MODIFICAR AEROPUERTO",1020,600);
+    		crearVentanaAux("aniadirAeropuerto","MODIFICAR AEROPUERTO",400,880);
     		tvTabla.setItems(aDao.cargarAeropuertos(bPrivado));
     	}catch(NullPointerException e){
     		ActividadLControllerLogeo.ventanaAlerta("E", "Seleccione un registro de la tabla. Si no hay, añada uno.");
@@ -224,6 +227,7 @@ public class ActividadLControllerAeropuertosAviones implements Initializable{
 		tcNumero.setCellValueFactory(new PropertyValueFactory<RegistroTabla, Integer>("numero"));
 		tcAño.setCellValueFactory(new PropertyValueFactory<RegistroTabla, Integer>("anio"));
 		tcCapacidad.setCellValueFactory(new PropertyValueFactory<RegistroTabla, Integer>("capacidad"));
+		tcImagen.setCellValueFactory(new PropertyValueFactory<RegistroTabla, Image>("imagen"));
 		if (bPrivado) {
 			tcSocios.setCellValueFactory(new PropertyValueFactory<RegistroTabla, Integer>("socios"));			
 		}else {

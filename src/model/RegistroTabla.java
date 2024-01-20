@@ -2,12 +2,15 @@ package model;
 
 import java.util.Objects;
 
+import javafx.scene.image.Image;
+
 public class RegistroTabla {
 
 	private int id;
 	private Integer capacidad,numero,anio,socios,num_trabajadores;
 	private String nombre,pais,ciudad,calle;
 	private Float financiacion;
+	private Image imagen;
 	
 	/**
 	 * Constructor para registro de aeropuerto privado.
@@ -21,7 +24,7 @@ public class RegistroTabla {
 	 * @param c capacidad
 	 * @param ns Nº socios
 	 */
-	public RegistroTabla(int i,String no,String p,String ci,String ca,Integer nu,Integer a,Integer c,Integer ns) {
+	public RegistroTabla(int i,String no,String p,String ci,String ca,Integer nu,Integer a,Integer c,Integer ns,Image img) {
 		setId(i);
 		setNombre(no);
 		setPais(p);
@@ -33,6 +36,7 @@ public class RegistroTabla {
 		setSocios(ns);
 		setFinanciacion(null);
 		setNum_trabajadores(null);
+		imagen = img;
 	}
 	/**
 	 * Constructor para registro de aeropuerto público.
@@ -47,7 +51,7 @@ public class RegistroTabla {
 	 * @param f financiación
 	 * @param t Nº trabajadores
 	 */
-	public RegistroTabla(int i,String no,String p,String ci,String ca,Integer nu,Integer a,Integer c,Float f,Integer t) {
+	public RegistroTabla(int i,String no,String p,String ci,String ca,Integer nu,Integer a,Integer c,Float f,Integer t,Image img) {
 		setId(i);
 		setNombre(no);
 		setPais(p);
@@ -59,6 +63,7 @@ public class RegistroTabla {
 		setSocios(null);
 		setFinanciacion(f);
 		setNum_trabajadores(t);
+		imagen = img;
 	}
 	
 	public RegistroTabla() {}
@@ -148,6 +153,13 @@ public class RegistroTabla {
 			return false;
 		RegistroTabla other = (RegistroTabla) obj;
 		return id == other.id;
+	}
+	
+	public Image getImagen() {
+		return imagen;
+	}
+	public void setImagen(Image imagen) {
+		this.imagen = imagen;
 	}
 	
 	@Override

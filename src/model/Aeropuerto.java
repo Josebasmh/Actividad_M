@@ -1,18 +1,22 @@
 package model;
 
+import javafx.scene.image.Image;
+
 public class Aeropuerto {
 
-	int id;
-	String nombre;
-	Integer anio_inauguracion,capacidad,id_direccion;
+	private int id;
+	private String nombre;
+	private Integer anio_inauguracion,capacidad,id_direccion;
+	private Image imagen;
 	
-	public Aeropuerto(int ID,String n, Integer a, Integer c, Integer id_di) {
+	public Aeropuerto(int ID,String n, Integer a, Integer c, Integer id_di, Image img) {
 		id=ID;
 		nombre=n;
 		anio_inauguracion=a;
 		capacidad=c;
 		id_direccion=id_di;
-	}
+		imagen = img;
+	}	
 
 	public int getId() {
 		return id;
@@ -57,6 +61,14 @@ public class Aeropuerto {
 	@Override
 	public String toString() {
 		return nombre;
+	}
+
+	public Image getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(Image imagen) {
+		this.imagen = imagen;
 	}
 	
 }
