@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.RegistroTabla;
 
@@ -26,6 +27,12 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
 
     @FXML
     private Button btnGuardar;
+    
+    @FXML
+    private Button btnImagen;
+
+    @FXML
+    private ImageView imgImagen;
 
     @FXML
     private Label lbFinanciacion;
@@ -118,6 +125,11 @@ public class ActividadLControllerAniadirAeropuerto implements Initializable{
     		lbFinanciacion.setText("Financiación:");
     		lbTrabajadores.setText("Número de trabajadores:");
     	}
+    }
+    
+    @FXML
+    void SeleccionarImagen(ActionEvent event) {
+
     }
     
 	@Override
